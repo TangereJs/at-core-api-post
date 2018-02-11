@@ -1,0 +1,62 @@
+<link rel="import" href="../tangere/tangere.html">
+<link rel="import" href="../at-core-activity/at-core-activity.html">
+<link rel="import" href="../at-core-modal/at-core-modal.html">
+
+
+<dom-module id="at-core-api-post">
+  <template>
+    <style>
+      :host {
+        display: inline;
+        box-sizing: border-box;
+      }
+    </style>
+    <at-core-activity id="post" url="{{url}}" on-response="_dataResponse" on-discard="_handleRequestDiscard" on-error="_handleRequestError"></at-core-activity>
+    <at-core-modal id="dialog"></at-core-modal> 
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'at-core-api-post',
+    properties: {
+      url: {
+        type: String,
+        value: ""
+      },
+      busy: {
+        type: Boolean,
+        value: false
+      }
+    },
+
+    ready: function () {
+
+    },
+    attached: function () {
+
+    },
+
+    detached: function () {
+
+    },
+    post: function(data) {
+      this.$.post.method = "POST";
+      this.$.post.indicator = true;
+      this.$.post.generateRequest();
+    },
+    _dataResponse: function (e) {
+      // *todo* do we have a UC needing a call back?
+      this.busy = false;
+    },
+
+    _handleRequestDiscard: function (e) {
+      this.busy = false;
+    },
+
+    _handleRequestError: function (e) {
+      this.busy = false;
+    }
+
+  });
+</script>
