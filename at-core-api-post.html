@@ -11,7 +11,7 @@
         box-sizing: border-box;
       }
     </style>
-    <at-core-activity id="post" url="{{url}}" on-response="_dataResponse" on-discard="_handleRequestDiscard" on-error="_handleRequestError"></at-core-activity>
+    <at-core-activity id="post" on-response="_dataResponse" on-discard="_handleRequestDiscard" on-error="_handleRequestError"></at-core-activity>
     <at-core-modal id="dialog"></at-core-modal> 
   </template>
 </dom-module>
@@ -40,11 +40,25 @@
     detached: function () {
 
     },
-    post: function(data) {
+
+    post: function (data) {
+
+      if (this.busy) {
+        alert("Busy. Please retry in some seconds.");
+        return;
+      }
+
+      this.busy = true;
+      debugger;
       this.$.post.method = "POST";
+      this.$.post.url = this.url + "/" + data.args.atAgentAction;
       this.$.post.indicator = true;
+      this.$.post.contentType = "application/json";
+      this.$.post.body = data;
       this.$.post.generateRequest();
+
     },
+
     _dataResponse: function (e) {
       // *todo* do we have a UC needing a call back?
       this.busy = false;
