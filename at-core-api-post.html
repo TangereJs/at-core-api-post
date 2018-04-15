@@ -49,7 +49,7 @@
       }
 
       this.busy = true;
-      debugger;
+     
       this.$.post.method = "POST";
       this.$.post.url = this.url + "/" + data.args.atAgentAction;
       this.$.post.indicator = true;
@@ -60,7 +60,8 @@
     },
 
     _dataResponse: function (e) {
-      // *todo* do we have a UC needing a call back?
+      // usually handled by Tangere.behaviors.actionhandler     
+      this.fire("api-response", e.detail);
       this.busy = false;
     },
 
