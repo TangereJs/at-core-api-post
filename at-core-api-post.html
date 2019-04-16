@@ -1,7 +1,7 @@
 <link rel="import" href="../tangere/tangere.html">
-<link rel="import" href="../at-core-activity/at-core-activity.html">
 <link rel="import" href="../at-core-modal/at-core-modal.html">
-
+<link rel="import" href="../at-core-activity-queue/at-core-activity-queue.html">
+<link rel="import" href="../at-core-spinner/at-core-spinner.html">
 
 <dom-module id="at-core-api-post">
   <template>
@@ -11,7 +11,8 @@
         box-sizing: border-box;
       }
     </style>
-    <at-core-activity id="post" on-response="_dataResponse" on-discard="_handleRequestDiscard" on-error="_handleRequestError" indicator-type="line"></at-core-activity>
+    <at-core-activity-queue id="post" on-response="_dataResponse" on-error="_handleRequestError" indicator="[[busy]]"></at-core-activity-queue>
+    <at-core-spinner id="spinner" display="none" type="line"></at-core-spinner>
     <at-core-modal id="dialog"></at-core-modal> 
   </template>
 </dom-module>
@@ -43,34 +44,30 @@
 
     post: function (data) {
 
-      if (this.busy) {
-        alert("Currently busy. Try again in a moment.");
-        return;
+      this.busy = true;
+
+      var requestOptions = {
+        method: "POST",
+        url: this.url + "/" + data.args.atAgentAction,
+        contentType: "application/json",
+        body: data,
       }
 
-      this.busy = true;
-     
-      this.$.post.method = "POST";
-      this.$.post.url = this.url + "/" + data.args.atAgentAction;
-      this.$.post.indicator = true;
-      this.$.post.contentType = "application/json";
-      this.$.post.body = data;
-      this.$.post.generateRequest();
-
+      this.$.post.addRequest(requestOptions);
+      
+      this.$.spinner.display = "block";
     },
 
     _dataResponse: function (e) {
       // usually handled by Tangere.behaviors.actionhandler     
-      this.fire("api-response", e.detail);
+      this.fire("api-response", e.detail.response);
       this.busy = false;
-    },
-
-    _handleRequestDiscard: function (e) {
-      this.busy = false;
+      this.$.spinner.display = "none";
     },
 
     _handleRequestError: function (e) {
       this.busy = false;
+      this.$.spinner.display = "none";
     }
 
   });
