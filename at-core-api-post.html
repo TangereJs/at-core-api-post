@@ -42,13 +42,13 @@
 
     },
 
-    post: function (data) {
+    post: function (data, url) {
 
       this.busy = true;
 
       var requestOptions = {
         method: "POST",
-        url: this.url + "/" + data.args.atAgentAction,
+        url: url || this.url + "/" + data.args.atAgentAction,
         contentType: "application/json",
         body: data,
       }
